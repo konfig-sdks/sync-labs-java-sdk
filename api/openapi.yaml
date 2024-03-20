@@ -1,0 +1,1376 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  description: Synchronize API allows you to lipsync a video to any audio in any language.
+  title: Synchronize API
+  version: "1.0"
+  x-konfig-has-globally-required-security: true
+servers:
+- url: https://api.synclabs.so
+security:
+- apiKey: []
+tags:
+- name: video
+- name: lipsync
+- name: translate
+- name: speak
+- name: animate
+- name: voices
+paths:
+  /video/cost:
+    get:
+      deprecated: true
+      operationId: VideoController_cost
+      parameters:
+      - description: A url to the audio file to be synchronized -- must be publicly
+          accessible
+        explode: true
+        in: query
+        name: audioUrl
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: A url to the video file to be synchronized -- must be publicly
+          accessible
+        explode: true
+        in: query
+        name: videoUrl
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          description: ""
+      summary: ""
+      tags:
+      - video
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--video-cost
+      x-accepts: application/json
+  /video:
+    post:
+      deprecated: true
+      description: "[Deprecated] Submit a set of urls to publically hosted audio and\
+        \ video files or to YouTube videos. Our synchronizer will sync the video's\
+        \ lip movements to match the audio and return the synced video."
+      operationId: VideoController_lipSync
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVideoDto'
+        description: "The audio + video data to be synced. Set synergize = false to\
+          \ skip our synergizer post-processor for a 10x speedup, but w/ a degredation\
+          \ in output quality."
+        required: true
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoInitial'
+          description: ""
+      summary: ""
+      tags:
+      - video
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-post--video
+      x-content-type: application/json
+      x-accepts: application/json
+  /video/{id}:
+    get:
+      deprecated: true
+      description: "[Deprecated] Use the video ID from the POST request to check video\
+        \ status. Keep checking until status is 'completed' and a download URL is\
+        \ provided."
+      operationId: VideoController_getLipSyncJob
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoExtended'
+          description: Returns video status and URL to download from.
+      summary: ""
+      tags:
+      - video
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--video-id
+      x-accepts: application/json
+  /lipsync/cost:
+    get:
+      operationId: LipSyncController_lipsyncCost
+      parameters:
+      - description: A url to the audio file to be synchronized -- must be publicly
+          accessible
+        explode: true
+        in: query
+        name: audioUrl
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: A url to the video file to be synchronized -- must be publicly
+          accessible
+        explode: true
+        in: query
+        name: videoUrl
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          description: ""
+      tags:
+      - lipsync
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--lipsync-cost
+      x-accepts: application/json
+  /lipsync:
+    post:
+      description: Submit a set of urls to publically hosted audio and video files
+        or to YouTube videos. Our synchronizer will sync the video's lip movements
+        to match the audio and return the synced video.
+      operationId: LipSyncController_lipSync
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LipsyncDto'
+        description: "The audio + video data to be synced. Set synergize = false to\
+          \ skip our synergizer post-processor for a 10x speedup, but w/ a degredation\
+          \ in output quality."
+        required: true
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LipSyncInitial'
+          description: ""
+      summary: ""
+      tags:
+      - lipsync
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-post--lipsync
+      x-content-type: application/json
+      x-accepts: application/json
+  /lipsync/{id}:
+    get:
+      description: Use the video ID from the POST request to check video status. Keep
+        checking until status is 'completed' and a download URL is provided.
+      operationId: LipSyncController_getLipsync
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LipSyncExtended'
+          description: Returns video status and URL to download from.
+      summary: ""
+      tags:
+      - lipsync
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--lipsync-id
+      x-accepts: application/json
+  /voices:
+    get:
+      description: Get all voices
+      operationId: VoicesController_voices
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      summary: ""
+      tags:
+      - voices
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--voices
+      x-accepts: application/json
+  /translate/cost:
+    get:
+      operationId: TranslateController_translationCost
+      parameters:
+      - description: A url to the video file to be synchronized -- must be publicly
+          accessible
+        explode: true
+        in: query
+        name: videoUrl
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          description: ""
+      tags:
+      - translate
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--translate-cost
+      x-accepts: application/json
+  /translate:
+    post:
+      description: Translates and synchronizes the given video to the specified target
+        language.
+      operationId: TranslateController_translate
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TranslateDto'
+        description: "Required data for translating and synchronizing video. Includes\
+          \ video URL, target language, and optional parameters for model selection,\
+          \ webhook integration, and credit limits."
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranslationJobInitial'
+          description: The translation job has been successfully created.
+      summary: ""
+      tags:
+      - translate
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-post--translate
+      x-content-type: application/json
+      x-accepts: application/json
+  /translate/{id}:
+    get:
+      description: Use the video ID from the POST request to check video status. Keep
+        checking until status is 'completed' and a download URL is provided.
+      operationId: TranslateController_getTranslation
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranslationJobExtended'
+          description: Returns video status and URL to download from.
+      summary: ""
+      tags:
+      - translate
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--translate-id
+      x-accepts: application/json
+  /speak/cost:
+    get:
+      operationId: SpeakController_speakCost
+      parameters:
+      - description: A string of text to be spoken by the AI
+        explode: true
+        in: query
+        name: transcript
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: A url pointing to a file of text to be spoken by the AI
+        explode: true
+        in: query
+        name: transcriptUrl
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          description: ""
+      tags:
+      - speak
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--speak-cost
+      x-accepts: application/json
+  /speak:
+    post:
+      description: ""
+      operationId: SpeakController_speak
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeakDto'
+        description: ""
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeakInitial'
+          description: ""
+      summary: ""
+      tags:
+      - speak
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-post--speak
+      x-content-type: application/json
+      x-accepts: application/json
+  /speak/{id}:
+    get:
+      description: Use the video ID from the POST request to check video status. Keep
+        checking until status is 'completed' and a download URL is provided.
+      operationId: SpeakController_getSpeech
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeakExtended'
+          description: Returns video status and URL to download from.
+      summary: ""
+      tags:
+      - speak
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--speak-id
+      x-accepts: application/json
+  /animate/cost:
+    get:
+      operationId: AnimateController_animateCost
+      parameters:
+      - description: A string of text to be spoken by the AI
+        explode: true
+        in: query
+        name: transcript
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: A url pointing to a file of text to be spoken by the AI
+        explode: true
+        in: query
+        name: transcriptUrl
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          description: ""
+      tags:
+      - animate
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--animate-cost
+      x-accepts: application/json
+  /animate:
+    post:
+      description: Generates audio given inputted text and voice and synchronizes
+        with the given video.
+      operationId: AnimateController_animate
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnimateDto'
+        description: "Required data for animating video. Includes video URL, transcript,\
+          \ voice, and optional parameters for webhook integration and credit limits."
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnimateInitial'
+          description: ""
+      summary: ""
+      tags:
+      - animate
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-post--animate
+      x-content-type: application/json
+      x-accepts: application/json
+  /animate/{id}:
+    get:
+      description: Use the ID from the POST request to check status. Keep checking
+        until status is 'completed' and a download URL is provided.
+      operationId: AnimateController_getAnimation
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnimateExtended'
+          description: Returns status and URL to download from.
+      summary: ""
+      tags:
+      - animate
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--animate-id
+      x-accepts: application/json
+components:
+  schemas:
+    CreateVideoDto:
+      example:
+        audioUrl: audioUrl
+        videoUrl: videoUrl
+        model: sync-1.5.0
+        synergize: true
+        maxCredits: 0.8008281904610115
+        webhookUrl: webhookUrl
+      properties:
+        audioUrl:
+          description: A url to the audio file to be synchronized -- must be publicly
+            accessible
+          type: string
+        videoUrl:
+          description: A url to the video file to be synchronized -- must be publicly
+            accessible
+          type: string
+        synergize:
+          default: true
+          description: A flag to enable / disable post-processing
+          example: true
+          type: boolean
+          x-konfig-original-example: true
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-CreateVideoDto-properties-synergize
+        maxCredits:
+          description: "Maximum number of credits to use for video generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-CreateVideoDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of video generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-CreateVideoDto-properties-webhookUrl
+          example: null
+        model:
+          default: sync-1.5.0
+          description: The model to use for video generation
+          example: sync-1.5.0
+          type: string
+          x-konfig-original-example: sync-1.5.0
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-CreateVideoDto-properties-model
+      required:
+      - audioUrl
+      - synergize
+      - videoUrl
+      type: object
+    VideoInitial:
+      example:
+        original_audio_url: original_audio_url
+        original_video_url: original_video_url
+        id: id
+        synergize: true
+        url: url
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the video.
+          type: string
+        url:
+          description: A URL which can be used to download the video.
+          type: string
+        original_video_url:
+          description: The original URL of the video that was submitted.
+          type: string
+        original_audio_url:
+          description: The original URL of the audio that was submitted.
+          type: string
+        status:
+          description: The status of the video.
+          type: string
+        synergize:
+          description: A flag to enable / disable post-processing
+          type: boolean
+      required:
+      - id
+      - original_audio_url
+      - original_video_url
+      - status
+      - synergize
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    VideoExtended:
+      example:
+        original_audio_url: original_audio_url
+        original_video_url: original_video_url
+        credits_deducted: 0.8008281904610115
+        id: id
+        synergize: true
+        url: url
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the video.
+          type: string
+        url:
+          description: A URL which can be used to download the video.
+          type: string
+        original_video_url:
+          description: The original URL of the video that was submitted.
+          type: string
+        original_audio_url:
+          description: The original URL of the audio that was submitted.
+          type: string
+        status:
+          description: The status of the video.
+          type: string
+        synergize:
+          description: A flag to enable / disable post-processing
+          type: boolean
+        credits_deducted:
+          description: The number of credits deducted for the video.
+          type: number
+      required:
+      - credits_deducted
+      - id
+      - original_audio_url
+      - original_video_url
+      - status
+      - synergize
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    LipsyncDto:
+      example:
+        audioUrl: audioUrl
+        videoUrl: videoUrl
+        model: sync-1.5.0
+        synergize: true
+        maxCredits: 0.8008281904610115
+        webhookUrl: webhookUrl
+      properties:
+        audioUrl:
+          description: A url to the audio file to be synchronized -- must be publicly
+            accessible
+          type: string
+        videoUrl:
+          description: A url to the video file to be synchronized -- must be publicly
+            accessible
+          type: string
+        synergize:
+          default: true
+          description: A flag to enable / disable post-processing
+          example: true
+          type: boolean
+          x-konfig-original-example: true
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-LipsyncDto-properties-synergize
+        maxCredits:
+          description: "Maximum number of credits to use for video generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-LipsyncDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of video generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-LipsyncDto-properties-webhookUrl
+          example: null
+        model:
+          default: sync-1.5.0
+          description: The model to use for video generation
+          example: sync-1.5.0
+          type: string
+          x-konfig-original-example: sync-1.5.0
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-LipsyncDto-properties-model
+      required:
+      - audioUrl
+      - synergize
+      - videoUrl
+      type: object
+    LipSyncInitial:
+      example:
+        original_audio_url: original_audio_url
+        original_video_url: original_video_url
+        id: id
+        synergize: true
+        url: url
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the video.
+          type: string
+        url:
+          description: A URL which can be used to download the video.
+          type: string
+        original_video_url:
+          description: The original URL of the video that was submitted.
+          type: string
+        original_audio_url:
+          description: The original URL of the audio that was submitted.
+          type: string
+        status:
+          description: The status of the video.
+          type: string
+        synergize:
+          description: A flag to enable / disable post-processing
+          type: boolean
+      required:
+      - id
+      - original_audio_url
+      - original_video_url
+      - status
+      - synergize
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    LipSyncExtended:
+      example:
+        original_audio_url: original_audio_url
+        original_video_url: original_video_url
+        credits_deducted: 0.8008281904610115
+        id: id
+        synergize: true
+        url: url
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the video.
+          type: string
+        url:
+          description: A URL which can be used to download the video.
+          type: string
+        original_video_url:
+          description: The original URL of the video that was submitted.
+          type: string
+        original_audio_url:
+          description: The original URL of the audio that was submitted.
+          type: string
+        status:
+          description: The status of the video.
+          type: string
+        synergize:
+          description: A flag to enable / disable post-processing
+          type: boolean
+        credits_deducted:
+          description: The number of credits deducted for the video.
+          type: number
+      required:
+      - credits_deducted
+      - id
+      - original_audio_url
+      - original_video_url
+      - status
+      - synergize
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    TranslateDto:
+      example:
+        videoUrl: videoUrl
+        targetLanguage: targetLanguage
+        model: sync-1.5.0
+        maxCredits: 0.8008281904610115
+        webhookUrl: webhookUrl
+      properties:
+        videoUrl:
+          description: A url to the video file to be translated and synchronized --
+            must be publicly accessible
+          type: string
+        targetLanguage:
+          description: Target language to translate the video to
+          type: string
+        maxCredits:
+          description: "Maximum number of credits to use for video generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-TranslateDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of video generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-TranslateDto-properties-webhookUrl
+          example: null
+        model:
+          default: sync-1.5.0
+          description: The model to use for video generation.
+          example: sync-1.5.0
+          type: string
+          x-konfig-original-example: sync-1.5.0
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-TranslateDto-properties-model
+      required:
+      - targetLanguage
+      - videoUrl
+      type: object
+    TranslationJobInitial:
+      example:
+        video_url: video_url
+        original_video_url: original_video_url
+        target_language: target_language
+        step: step
+        id: id
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the translation job.
+          type: string
+        video_url:
+          description: A URL which can be used to download the video.
+          type: string
+        original_video_url:
+          description: The original URL of the video that was submitted.
+          type: string
+        target_language:
+          description: The language into which the video is being translated.
+          type: string
+        status:
+          description: The status of the translation job.
+          type: string
+        step:
+          description: The step of the translation job.
+          type: string
+      required:
+      - id
+      - original_video_url
+      - status
+      - step
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    TranslationJobExtended:
+      example:
+        transcript_url: transcript_url
+        video_url: video_url
+        original_video_url: original_video_url
+        source_language: source_language
+        target_language: target_language
+        audio_url: audio_url
+        step: step
+        id: id
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the translation job.
+          type: string
+        video_url:
+          description: A URL which can be used to download the video.
+          type: string
+        audio_url:
+          description: A URL which can be used to download the audio.
+          type: string
+        transcript_url:
+          description: A URL to access the transcript of the video.
+          type: string
+        original_video_url:
+          description: The original URL of the video that was submitted.
+          type: string
+        source_language:
+          description: The source language of the video.
+          type: string
+        target_language:
+          description: The language into which the video is being translated.
+          type: string
+        status:
+          description: The status of the translation job.
+          type: string
+        step:
+          description: The step of the translation job.
+          type: string
+      required:
+      - audio_url
+      - id
+      - original_video_url
+      - source_language
+      - status
+      - step
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    SpeakDto:
+      example:
+        voiceId: voiceId
+        transcript: transcript
+        maxCredits: 0.8008281904610115
+        webhookUrl: webhookUrl
+      properties:
+        transcript:
+          description: A string of text to be spoken by the AI
+          type: string
+        voiceId:
+          description: The voice to use for audio generation
+          type: string
+        maxCredits:
+          description: "Maximum number of credits to use for audio generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-SpeakDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of audio generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-SpeakDto-properties-webhookUrl
+          example: null
+      required:
+      - transcript
+      - voiceId
+      type: object
+    SpeakInitial:
+      example:
+        transcript_url: transcript_url
+        audio_url: audio_url
+        id: id
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the video.
+          type: string
+        audio_url:
+          description: A URL which can be used to download the audio.
+          type: string
+        transcript_url:
+          description: A URL to a file containing the input transcript.
+          type: string
+        status:
+          description: The status of the audio.
+          type: string
+      required:
+      - id
+      - status
+      - transcript_url
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    SpeakExtended:
+      example:
+        transcript_url: transcript_url
+        audio_url: audio_url
+        credits_deducted: 0.8008281904610115
+        id: id
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the video.
+          type: string
+        audio_url:
+          description: A URL which can be used to download the audio.
+          type: string
+        transcript_url:
+          description: A URL to a file containing the input transcript.
+          type: string
+        status:
+          description: The status of the audio.
+          type: string
+        credits_deducted:
+          description: The number of credits deducted for the audio.
+          type: number
+      required:
+      - credits_deducted
+      - id
+      - status
+      - transcript_url
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    AnimateDto:
+      example:
+        voiceId: voiceId
+        transcript: transcript
+        videoUrl: videoUrl
+        model: sync-1.5.0
+        maxCredits: 0.8008281904610115
+        webhookUrl: webhookUrl
+      properties:
+        videoUrl:
+          description: A url to the video file to be synchronized -- must be publicly
+            accessible
+          type: string
+        transcript:
+          description: A string of text to be spoken by the AI
+          type: string
+        voiceId:
+          description: The voice to use for audio generation
+          type: string
+        model:
+          default: sync-1.5.0
+          description: The model to use for video generation
+          example: sync-1.5.0
+          type: string
+          x-konfig-original-example: sync-1.5.0
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-AnimateDto-properties-model
+        maxCredits:
+          description: "Maximum number of credits to use for audio generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-AnimateDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of audio generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-AnimateDto-properties-webhookUrl
+          example: null
+      required:
+      - transcript
+      - videoUrl
+      - voiceId
+      type: object
+    AnimateInitial:
+      example:
+        transcript_url: transcript_url
+        video_url: video_url
+        audio_url: audio_url
+        id: id
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the video.
+          type: string
+        video_url:
+          description: A URL which can be used to download the audio.
+          type: string
+        audio_url:
+          description: A URL which can be used to download the audio.
+          type: string
+        transcript_url:
+          description: A URL to a file containing the input transcript.
+          type: string
+        status:
+          description: The status of the audio.
+          type: string
+      required:
+      - id
+      - status
+      - transcript_url
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    AnimateExtended:
+      example:
+        transcript_url: transcript_url
+        video_url: video_url
+        audio_url: audio_url
+        credits_deducted: 0.8008281904610115
+        id: id
+        status: status
+      properties:
+        id:
+          description: A unique identifier for the video.
+          type: string
+        video_url:
+          description: A URL which can be used to download the audio.
+          type: string
+        audio_url:
+          description: A URL which can be used to download the audio.
+          type: string
+        transcript_url:
+          description: A URL to a file containing the input transcript.
+          type: string
+        status:
+          description: The status of the audio.
+          type: string
+        credits_deducted:
+          description: The number of credits deducted for the audio.
+          type: number
+      required:
+      - credits_deducted
+      - id
+      - status
+      - transcript_url
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    konfig-generated-schema-components-schemas-CreateVideoDto-properties-synergize:
+      example: true
+      type: boolean
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-CreateVideoDto-properties-maxCredits:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-CreateVideoDto-properties-webhookUrl:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-CreateVideoDto-properties-model:
+      example: sync-1.5.0
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-LipsyncDto-properties-synergize:
+      example: true
+      type: boolean
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-LipsyncDto-properties-maxCredits:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-LipsyncDto-properties-webhookUrl:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-LipsyncDto-properties-model:
+      example: sync-1.5.0
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-TranslateDto-properties-maxCredits:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-TranslateDto-properties-webhookUrl:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-TranslateDto-properties-model:
+      example: sync-1.5.0
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-SpeakDto-properties-maxCredits:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-SpeakDto-properties-webhookUrl:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-AnimateDto-properties-model:
+      example: sync-1.5.0
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-AnimateDto-properties-maxCredits:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-AnimateDto-properties-webhookUrl:
+      nullable: true
+      type: string
+      x-konfig-null-placeholder: true
+      x-do-not-generate: true
+    konfig-generated-schema-single-parameter-schema-get--video-cost:
+      properties:
+        audioUrl:
+          type: string
+        videoUrl:
+          type: string
+      required:
+      - audioUrl
+      - videoUrl
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - audioUrl
+      - videoUrl
+    konfig-generated-schema-single-parameter-schema-post--video:
+      properties:
+        audioUrl:
+          description: A url to the audio file to be synchronized -- must be publicly
+            accessible
+          type: string
+        videoUrl:
+          description: A url to the video file to be synchronized -- must be publicly
+            accessible
+          type: string
+        synergize:
+          default: true
+          description: A flag to enable / disable post-processing
+          example: true
+          type: boolean
+          x-konfig-original-example: true
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-CreateVideoDto-properties-synergize
+        maxCredits:
+          description: "Maximum number of credits to use for video generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-CreateVideoDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of video generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-CreateVideoDto-properties-webhookUrl
+          example: null
+        model:
+          default: sync-1.5.0
+          description: The model to use for video generation
+          example: sync-1.5.0
+          type: string
+          x-konfig-original-example: sync-1.5.0
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-CreateVideoDto-properties-model
+      required:
+      - audioUrl
+      - synergize
+      - videoUrl
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--video-id:
+      properties:
+        id:
+          type: string
+      required:
+      - id
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - id
+    konfig-generated-schema-single-parameter-schema-get--lipsync-cost:
+      properties:
+        audioUrl:
+          type: string
+        videoUrl:
+          type: string
+      required:
+      - audioUrl
+      - videoUrl
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - audioUrl
+      - videoUrl
+    konfig-generated-schema-single-parameter-schema-post--lipsync:
+      properties:
+        audioUrl:
+          description: A url to the audio file to be synchronized -- must be publicly
+            accessible
+          type: string
+        videoUrl:
+          description: A url to the video file to be synchronized -- must be publicly
+            accessible
+          type: string
+        synergize:
+          default: true
+          description: A flag to enable / disable post-processing
+          example: true
+          type: boolean
+          x-konfig-original-example: true
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-LipsyncDto-properties-synergize
+        maxCredits:
+          description: "Maximum number of credits to use for video generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-LipsyncDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of video generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-LipsyncDto-properties-webhookUrl
+          example: null
+        model:
+          default: sync-1.5.0
+          description: The model to use for video generation
+          example: sync-1.5.0
+          type: string
+          x-konfig-original-example: sync-1.5.0
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-LipsyncDto-properties-model
+      required:
+      - audioUrl
+      - synergize
+      - videoUrl
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--lipsync-id:
+      properties:
+        id:
+          type: string
+      required:
+      - id
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - id
+    konfig-generated-schema-single-parameter-schema-get--voices:
+      properties: {}
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--translate-cost:
+      properties:
+        videoUrl:
+          type: string
+      required:
+      - videoUrl
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - videoUrl
+    konfig-generated-schema-single-parameter-schema-post--translate:
+      properties:
+        videoUrl:
+          description: A url to the video file to be translated and synchronized --
+            must be publicly accessible
+          type: string
+        targetLanguage:
+          description: Target language to translate the video to
+          type: string
+        maxCredits:
+          description: "Maximum number of credits to use for video generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-TranslateDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of video generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-TranslateDto-properties-webhookUrl
+          example: null
+        model:
+          default: sync-1.5.0
+          description: The model to use for video generation.
+          example: sync-1.5.0
+          type: string
+          x-konfig-original-example: sync-1.5.0
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-TranslateDto-properties-model
+      required:
+      - targetLanguage
+      - videoUrl
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--translate-id:
+      properties:
+        id:
+          type: string
+      required:
+      - id
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - id
+    konfig-generated-schema-single-parameter-schema-get--speak-cost:
+      properties:
+        transcript:
+          type: string
+        transcriptUrl:
+          type: string
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - transcript
+      - transcriptUrl
+    konfig-generated-schema-single-parameter-schema-post--speak:
+      properties:
+        transcript:
+          description: A string of text to be spoken by the AI
+          type: string
+        voiceId:
+          description: The voice to use for audio generation
+          type: string
+        maxCredits:
+          description: "Maximum number of credits to use for audio generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-SpeakDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of audio generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-SpeakDto-properties-webhookUrl
+          example: null
+      required:
+      - transcript
+      - voiceId
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--speak-id:
+      properties:
+        id:
+          type: string
+      required:
+      - id
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - id
+    konfig-generated-schema-single-parameter-schema-get--animate-cost:
+      properties:
+        transcript:
+          type: string
+        transcriptUrl:
+          type: string
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - transcript
+      - transcriptUrl
+    konfig-generated-schema-single-parameter-schema-post--animate:
+      properties:
+        videoUrl:
+          description: A url to the video file to be synchronized -- must be publicly
+            accessible
+          type: string
+        transcript:
+          description: A string of text to be spoken by the AI
+          type: string
+        voiceId:
+          description: The voice to use for audio generation
+          type: string
+        model:
+          default: sync-1.5.0
+          description: The model to use for video generation
+          example: sync-1.5.0
+          type: string
+          x-konfig-original-example: sync-1.5.0
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-AnimateDto-properties-model
+        maxCredits:
+          description: "Maximum number of credits to use for audio generation. If\
+            \ job exceeds this value, the job will be aborted"
+          type: number
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-AnimateDto-properties-maxCredits
+          example: null
+        webhookUrl:
+          description: A url to send a notification to upon completion of audio generation
+          type: string
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-AnimateDto-properties-webhookUrl
+          example: null
+      required:
+      - transcript
+      - videoUrl
+      - voiceId
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--animate-id:
+      properties:
+        id:
+          type: string
+      required:
+      - id
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - id
+  securitySchemes:
+    apiKey:
+      in: header
+      name: x-api-key
+      type: apiKey
+      x-konfig-globally-required-security: true
+
